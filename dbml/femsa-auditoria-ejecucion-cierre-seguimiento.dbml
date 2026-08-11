@@ -1,96 +1,96 @@
-// FEMSA Auditoria - Equipo 2
-// Alcance inicial: ejecucion, cierre y seguimiento
+// FEMSA Audit - Team 2
+// Initial scope: execution, closing, and follow-up
 
-Table usuarios {
+Table users {
   id integer [primary key]
-  nombre varchar
-  correo varchar
-  rol varchar [note: 'E.g. auditor, jefe, gerente, auditado']
+  name varchar
+  email varchar
+  role varchar [note: 'E.g. auditor, manager, director, auditee']
   area varchar
-  activo boolean
+  active boolean
 }
 
-Table auditorias {
+Table audits {
   id integer [primary key]
-  codigo varchar
-  nombre varchar
-  unidad_negocio varchar [note: 'E.g. KOF, Proximidad, Spin']
-  proceso varchar
-  responsable_id integer
-  estado varchar [note: 'E.g. pendiente, en_ejecucion, en_cierre, cerrada']
-  fecha_inicio date
-  fecha_fin date
+  code varchar
+  name varchar
+  business_unit varchar [note: 'E.g. KOF, Proximity, Spin']
+  process varchar
+  owner_id integer
+  status varchar [note: 'E.g. pending, in_execution, in_closing, closed']
+  start_date date
+  end_date date
 }
 
-Table controles {
+Table controls {
   id integer [primary key]
-  codigo varchar
-  nombre varchar
-  descripcion varchar
-  riesgo_asociado varchar
-  responsable_id integer
+  code varchar
+  name varchar
+  description varchar
+  related_risk varchar
+  owner_id integer
 }
 
-Table auditoria_controles {
+Table audit_controls {
   id integer [primary key]
-  auditoria_id integer
+  audit_id integer
   control_id integer
   auditor_id integer
-  resultado_diseno varchar
-  resultado_efectividad varchar
+  design_result varchar
+  effectiveness_result varchar
   conclusion varchar
 }
 
-Table evidencias {
+Table evidence {
   id integer [primary key]
-  auditoria_id integer
+  audit_id integer
   control_id integer
-  hallazgo_id integer
-  nombre_archivo varchar
-  url_archivo varchar
-  cargado_por_id integer
-  fecha_carga timestamp
+  finding_id integer
+  file_name varchar
+  file_url varchar
+  uploaded_by_id integer
+  upload_date timestamp
 }
 
-Table hallazgos {
+Table findings {
   id integer [primary key]
-  auditoria_id integer
+  audit_id integer
   control_id integer
-  titulo varchar
-  descripcion varchar
-  severidad varchar [note: 'E.g. baja, media, alta, critica']
-  estado varchar [note: 'E.g. abierto, en_plan_accion, en_seguimiento, cerrado']
-  responsable_id integer
-  fecha_identificacion date
+  title varchar
+  description varchar
+  severity varchar [note: 'E.g. low, medium, high, critical']
+  status varchar [note: 'E.g. open, action_plan, follow_up, closed']
+  owner_id integer
+  identified_date date
 }
 
-Table planes_accion {
+Table action_plans {
   id integer [primary key]
-  hallazgo_id integer
-  descripcion varchar
-  responsable_id integer
-  estado varchar [note: 'E.g. pendiente, en_progreso, vencido, completado, validado']
-  fecha_compromiso date
-  avance_porcentaje integer
-  comentario_seguimiento varchar
-  fecha_ultimo_seguimiento date
+  finding_id integer
+  description varchar
+  owner_id integer
+  status varchar [note: 'E.g. pending, in_progress, overdue, completed, validated']
+  due_date date
+  progress_percentage integer
+  follow_up_comment varchar
+  last_follow_up_date date
 }
 
-Ref: auditorias.responsable_id > usuarios.id
-Ref: controles.responsable_id > usuarios.id
+Ref: audits.owner_id > users.id
+Ref: controls.owner_id > users.id
 
-Ref: auditoria_controles.auditoria_id > auditorias.id
-Ref: auditoria_controles.control_id > controles.id
-Ref: auditoria_controles.auditor_id > usuarios.id
+Ref: audit_controls.audit_id > audits.id
+Ref: audit_controls.control_id > controls.id
+Ref: audit_controls.auditor_id > users.id
 
-Ref: evidencias.auditoria_id > auditorias.id
-Ref: evidencias.control_id > controles.id
-Ref: evidencias.hallazgo_id > hallazgos.id
-Ref: evidencias.cargado_por_id > usuarios.id
+Ref: evidence.audit_id > audits.id
+Ref: evidence.control_id > controls.id
+Ref: evidence.finding_id > findings.id
+Ref: evidence.uploaded_by_id > users.id
 
-Ref: hallazgos.auditoria_id > auditorias.id
-Ref: hallazgos.control_id > controles.id
-Ref: hallazgos.responsable_id > usuarios.id
+Ref: findings.audit_id > audits.id
+Ref: findings.control_id > controls.id
+Ref: findings.owner_id > users.id
 
-Ref: planes_accion.hallazgo_id > hallazgos.id
-Ref: planes_accion.responsable_id > usuarios.id
+Ref: action_plans.finding_id > findings.id
+Ref: action_plans.owner_id > users.id

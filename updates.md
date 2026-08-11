@@ -64,3 +64,11 @@
 
 - Se adopta `integer` por consistencia con los modelos iniciales del resto del equipo.
 - El DBML se simplifica al estilo compartido por el equipo: `varchar` sin longitud, menos restricciones y notas de ejemplo.
+
+## 2026-08-11 - DBML en ingles
+
+### Logrado
+
+- Se cambiaron tablas y campos del DBML a ingles para alinearse con el formato compartido por el equipo.
+- Se conservaron las mismas 7 tablas iniciales.
+- Se mantuvo el formato simple: `integer [primary key]`, `varchar` sin longitud y notas `E.g.`.

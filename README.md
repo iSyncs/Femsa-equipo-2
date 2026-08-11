@@ -38,13 +38,13 @@ El modelo DBML inicial para trabajar en dbdiagram.io esta en:
 
 Por ahora se mantiene una version simplificada con 7 tablas:
 
-- `usuarios`
-- `auditorias`
-- `controles`
-- `auditoria_controles`
-- `evidencias`
-- `hallazgos`
-- `planes_accion`
+- `users`
+- `audits`
+- `controls`
+- `audit_controls`
+- `evidence`
+- `findings`
+- `action_plans`
 
 El objetivo es validar primero la estructura general. En futuros releases se podran separar tablas como roles, unidades de negocio, seguimientos, aprobaciones o bitacora si el alcance lo requiere.
 
