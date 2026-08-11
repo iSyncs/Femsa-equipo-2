@@ -15,6 +15,17 @@ Incluye:
 - SQL inicial equivalente para PostgreSQL.
 - Registro de avances en `updates.md`.
 
+## v0.1.1 - Modelo simplificado
+
+Estado: preparado.
+
+Incluye:
+
+- Reduccion del modelo DBML a 7 tablas iniciales.
+- SQL inicial alineado al modelo simple.
+- README actualizado con la lista de tablas base.
+- Registro de avance sobre la simplificacion del modelo.
+
 ## Proximas versiones propuestas
 
 ### v0.2.0
@@ -33,4 +44,3 @@ Incluye:
 
 - Modelo estable de ejecucion, cierre y seguimiento.
 - Documentacion suficiente para iniciar implementacion tecnica.
-

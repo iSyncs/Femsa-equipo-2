@@ -28,3 +28,17 @@
 - El modelo de datos se escribira primero en DBML para facilitar su uso en dbdiagram.io.
 - El equipo se enfocara en datos y reglas de ejecucion, cierre y seguimiento.
 
+## 2026-08-11 - Simplificacion del modelo inicial
+
+### Logrado
+
+- Se redujo el DBML inicial a 7 tablas para que sea mas manejable en esta etapa.
+- Se mantuvo el enfoque en ejecucion, cierre y seguimiento.
+- Se dejo `planes_accion` con campos basicos de seguimiento para evitar crear tablas extra prematuramente.
+- Se actualizo el SQL inicial para reflejar el mismo modelo simple.
+
+### Planeado
+
+- Validar las 7 tablas contra la imagen ER original del equipo.
+- Decidir en conjunto que campos debe tener cada tabla.
+- Agregar relaciones o tablas nuevas solo cuando el equipo las justifique para un siguiente release.
