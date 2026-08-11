@@ -42,3 +42,11 @@
 - Validar las 7 tablas contra la imagen ER original del equipo.
 - Decidir en conjunto que campos debe tener cada tabla.
 - Agregar relaciones o tablas nuevas solo cuando el equipo las justifique para un siguiente release.
+
+## 2026-08-11 - Version inicial oficial
+
+### Logrado
+
+- Se definio el modelo simplificado actual como `v1.0.0`.
+- Se dejaron las 7 tablas como punto de partida oficial del proyecto.
+- Se eliminaran las versiones previas `v0.1.0` y `v0.1.1` para evitar confusion.

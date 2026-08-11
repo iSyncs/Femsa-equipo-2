@@ -50,12 +50,14 @@ El objetivo es validar primero la estructura general. En futuros releases se pod
 
 ## Versionado
 
-El proyecto se manejara por versiones/releases. Propuesta inicial:
+El proyecto se manejara por versiones/releases. Version inicial:
 
-- `v0.1.0`: documentacion base, alcance y modelo inicial
-- `v0.2.0`: ajustes posteriores al video explicativo y retroalimentacion del equipo
-- `v0.3.0`: refinamiento del modelo ER y reglas de negocio
-- `v1.0.0`: version estable del alcance de ejecucion, cierre y seguimiento
+- `v1.0.0`: version inicial con documentacion base, PDF, contexto y modelo DBML simplificado de 7 tablas
+
+Proximas versiones:
+
+- `v1.1.0`: ajustes posteriores al video explicativo y a la imagen ER del equipo
+- `v1.2.0`: refinamiento de campos, relaciones y reglas de negocio
 
 El detalle de versiones se mantendra en:
 
