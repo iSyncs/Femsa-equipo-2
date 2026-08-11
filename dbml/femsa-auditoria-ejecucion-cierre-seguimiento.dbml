@@ -1,0 +1,415 @@
+// FEMSA Auditoria - Equipo 2
+// Alcance: ejecucion, cierre y seguimiento
+// Formato compatible con https://dbdiagram.io/d
+
+Project femsa_auditoria_equipo_2 {
+  database_type: "PostgreSQL"
+  Note: "Modelo inicial para ejecucion, cierre y seguimiento de auditorias internas."
+}
+
+Enum auditoria_estado {
+  programada
+  en_ejecucion
+  en_revision
+  en_cierre
+  cerrada
+  cancelada
+}
+
+Enum evaluacion_resultado {
+  efectivo
+  parcialmente_efectivo
+  no_efectivo
+  no_aplica
+}
+
+Enum hallazgo_severidad {
+  baja
+  media
+  alta
+  critica
+}
+
+Enum hallazgo_estado {
+  identificado
+  en_validacion
+  confirmado
+  descartado
+  con_plan
+  en_seguimiento
+  remediado
+  cerrado
+}
+
+Enum plan_estado {
+  propuesto
+  en_revision
+  aprobado
+  rechazado
+  en_progreso
+  vencido
+  implementado
+  validado
+  cerrado
+}
+
+Enum aprobacion_estado {
+  pendiente
+  aprobado
+  rechazado
+  devuelto
+}
+
+Enum solicitud_cambio_estado {
+  pendiente
+  aprobada
+  rechazada
+  cancelada
+}
+
+Enum evidencia_tipo {
+  documento
+  hoja_calculo
+  imagen
+  correo
+  enlace
+  otro
+}
+
+Table unidades_negocio {
+  id uuid [pk]
+  nombre varchar(150) [not null, unique]
+  pais varchar(80)
+  activa boolean [not null, default: true]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table procesos {
+  id uuid [pk]
+  unidad_negocio_id uuid [not null]
+  nombre varchar(180) [not null]
+  descripcion text
+  activo boolean [not null, default: true]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (unidad_negocio_id, nombre) [unique]
+  }
+}
+
+Table usuarios {
+  id uuid [pk]
+  nombre varchar(160) [not null]
+  email varchar(180) [not null, unique]
+  puesto varchar(120)
+  unidad_negocio_id uuid
+  activo boolean [not null, default: true]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table roles {
+  id uuid [pk]
+  nombre varchar(80) [not null, unique]
+  descripcion text
+}
+
+Table usuario_roles {
+  usuario_id uuid [not null]
+  rol_id uuid [not null]
+  created_at timestamp [not null]
+
+  indexes {
+    (usuario_id, rol_id) [pk]
+  }
+}
+
+Table auditorias {
+  id uuid [pk]
+  codigo varchar(50) [not null, unique]
+  titulo varchar(220) [not null]
+  unidad_negocio_id uuid [not null]
+  proceso_id uuid
+  responsable_auditoria_id uuid [not null]
+  estado auditoria_estado [not null, default: "programada"]
+  objetivo text
+  alcance text
+  fecha_inicio_plan date
+  fecha_fin_plan date
+  fecha_inicio_real date
+  fecha_fin_real date
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table auditoria_auditores {
+  id uuid [pk]
+  auditoria_id uuid [not null]
+  usuario_id uuid [not null]
+  rol_en_auditoria varchar(100) [not null]
+  horas_presupuestadas decimal(10,2)
+  horas_registradas decimal(10,2) [not null, default: 0]
+  asignado_at timestamp [not null]
+
+  indexes {
+    (auditoria_id, usuario_id) [unique]
+  }
+}
+
+Table riesgos {
+  id uuid [pk]
+  codigo varchar(50) [not null, unique]
+  nombre varchar(220) [not null]
+  descripcion text
+  categoria varchar(120)
+  nivel_inherente varchar(50)
+  activo boolean [not null, default: true]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table controles {
+  id uuid [pk]
+  codigo varchar(50) [not null, unique]
+  riesgo_id uuid [not null]
+  proceso_id uuid
+  nombre varchar(220) [not null]
+  descripcion text
+  frecuencia varchar(80)
+  propietario_id uuid
+  activo boolean [not null, default: true]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table auditoria_controles {
+  id uuid [pk]
+  auditoria_id uuid [not null]
+  control_id uuid [not null]
+  auditor_asignado_id uuid
+  incluido_en_alcance boolean [not null, default: true]
+  notas_alcance text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (auditoria_id, control_id) [unique]
+  }
+}
+
+Table evaluaciones_control {
+  id uuid [pk]
+  auditoria_control_id uuid [not null]
+  evaluador_id uuid [not null]
+  resultado_diseno evaluacion_resultado
+  resultado_efectividad evaluacion_resultado
+  modelo_madurez varchar(120)
+  calificacion_madurez decimal(5,2)
+  metodologia_muestreo text
+  conclusion text
+  evaluado_at timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table evidencias {
+  id uuid [pk]
+  auditoria_id uuid [not null]
+  auditoria_control_id uuid
+  evaluacion_control_id uuid
+  hallazgo_id uuid
+  plan_accion_id uuid
+  cargado_por_id uuid [not null]
+  tipo evidencia_tipo [not null]
+  nombre_archivo varchar(255) [not null]
+  uri_almacenamiento text [not null]
+  tamano_bytes bigint
+  hash_archivo varchar(128)
+  es_confidencial boolean [not null, default: false]
+  version int [not null, default: 1]
+  descripcion text
+  created_at timestamp [not null]
+}
+
+Table hallazgos {
+  id uuid [pk]
+  auditoria_id uuid [not null]
+  auditoria_control_id uuid
+  evaluacion_control_id uuid
+  codigo varchar(50) [not null, unique]
+  titulo varchar(220) [not null]
+  descripcion text [not null]
+  tipologia varchar(120)
+  severidad hallazgo_severidad [not null]
+  vulnerabilidad varchar(120)
+  riesgo_residual varchar(80)
+  estado hallazgo_estado [not null, default: "identificado"]
+  identificado_por_id uuid [not null]
+  responsable_negocio_id uuid
+  fecha_identificacion date [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table planes_accion {
+  id uuid [pk]
+  hallazgo_id uuid [not null]
+  titulo varchar(220) [not null]
+  descripcion text [not null]
+  responsable_id uuid [not null]
+  aprobador_auditoria_id uuid
+  estado plan_estado [not null, default: "propuesto"]
+  fecha_compromiso date [not null]
+  fecha_inicio date
+  fecha_implementacion date
+  porcentaje_avance int [not null, default: 0]
+  impacto_riesgo_residual text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table seguimiento_planes {
+  id uuid [pk]
+  plan_accion_id uuid [not null]
+  registrado_por_id uuid [not null]
+  estado_plan plan_estado [not null]
+  porcentaje_avance int [not null]
+  comentario text
+  fecha_reporte date [not null]
+  created_at timestamp [not null]
+}
+
+Table solicitudes_cambio {
+  id uuid [pk]
+  plan_accion_id uuid
+  hallazgo_id uuid
+  solicitado_por_id uuid [not null]
+  revisado_por_id uuid
+  tipo_cambio varchar(80) [not null]
+  justificacion text [not null]
+  valor_anterior text
+  valor_solicitado text
+  estado solicitud_cambio_estado [not null, default: "pendiente"]
+  respuesta text
+  solicitado_at timestamp [not null]
+  revisado_at timestamp
+}
+
+Table aprobaciones {
+  id uuid [pk]
+  entidad_tipo varchar(80) [not null]
+  entidad_id uuid [not null]
+  nivel int [not null]
+  aprobador_id uuid [not null]
+  estado aprobacion_estado [not null, default: "pendiente"]
+  comentario text
+  decidido_at timestamp
+  created_at timestamp [not null]
+
+  indexes {
+    (entidad_tipo, entidad_id, nivel, aprobador_id)
+  }
+}
+
+Table criterios_cierre {
+  id uuid [pk]
+  auditoria_id uuid [not null]
+  nombre varchar(180) [not null]
+  descripcion text
+  cumplido boolean [not null, default: false]
+  validado_por_id uuid
+  validado_at timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table informes_auditoria {
+  id uuid [pk]
+  auditoria_id uuid [not null]
+  generado_por_id uuid [not null]
+  titulo varchar(220) [not null]
+  version int [not null, default: 1]
+  uri_documento text
+  resumen_ejecutivo text
+  generado_at timestamp [not null]
+}
+
+Table notificaciones {
+  id uuid [pk]
+  usuario_id uuid [not null]
+  entidad_tipo varchar(80)
+  entidad_id uuid
+  titulo varchar(180) [not null]
+  mensaje text [not null]
+  leida boolean [not null, default: false]
+  enviada_at timestamp [not null]
+  leida_at timestamp
+}
+
+Table bitacora_auditoria {
+  id uuid [pk]
+  usuario_id uuid
+  entidad_tipo varchar(80) [not null]
+  entidad_id uuid [not null]
+  accion varchar(120) [not null]
+  detalle json
+  ip_origen varchar(80)
+  user_agent text
+  created_at timestamp [not null]
+}
+
+Ref: procesos.unidad_negocio_id > unidades_negocio.id
+Ref: usuarios.unidad_negocio_id > unidades_negocio.id
+Ref: usuario_roles.usuario_id > usuarios.id
+Ref: usuario_roles.rol_id > roles.id
+
+Ref: auditorias.unidad_negocio_id > unidades_negocio.id
+Ref: auditorias.proceso_id > procesos.id
+Ref: auditorias.responsable_auditoria_id > usuarios.id
+Ref: auditoria_auditores.auditoria_id > auditorias.id
+Ref: auditoria_auditores.usuario_id > usuarios.id
+
+Ref: controles.riesgo_id > riesgos.id
+Ref: controles.proceso_id > procesos.id
+Ref: controles.propietario_id > usuarios.id
+Ref: auditoria_controles.auditoria_id > auditorias.id
+Ref: auditoria_controles.control_id > controles.id
+Ref: auditoria_controles.auditor_asignado_id > usuarios.id
+
+Ref: evaluaciones_control.auditoria_control_id > auditoria_controles.id
+Ref: evaluaciones_control.evaluador_id > usuarios.id
+
+Ref: evidencias.auditoria_id > auditorias.id
+Ref: evidencias.auditoria_control_id > auditoria_controles.id
+Ref: evidencias.evaluacion_control_id > evaluaciones_control.id
+Ref: evidencias.hallazgo_id > hallazgos.id
+Ref: evidencias.plan_accion_id > planes_accion.id
+Ref: evidencias.cargado_por_id > usuarios.id
+
+Ref: hallazgos.auditoria_id > auditorias.id
+Ref: hallazgos.auditoria_control_id > auditoria_controles.id
+Ref: hallazgos.evaluacion_control_id > evaluaciones_control.id
+Ref: hallazgos.identificado_por_id > usuarios.id
+Ref: hallazgos.responsable_negocio_id > usuarios.id
+
+Ref: planes_accion.hallazgo_id > hallazgos.id
+Ref: planes_accion.responsable_id > usuarios.id
+Ref: planes_accion.aprobador_auditoria_id > usuarios.id
+Ref: seguimiento_planes.plan_accion_id > planes_accion.id
+Ref: seguimiento_planes.registrado_por_id > usuarios.id
+
+Ref: solicitudes_cambio.plan_accion_id > planes_accion.id
+Ref: solicitudes_cambio.hallazgo_id > hallazgos.id
+Ref: solicitudes_cambio.solicitado_por_id > usuarios.id
+Ref: solicitudes_cambio.revisado_por_id > usuarios.id
+
+Ref: aprobaciones.aprobador_id > usuarios.id
+Ref: criterios_cierre.auditoria_id > auditorias.id
+Ref: criterios_cierre.validado_por_id > usuarios.id
+Ref: informes_auditoria.auditoria_id > auditorias.id
+Ref: informes_auditoria.generado_por_id > usuarios.id
+Ref: notificaciones.usuario_id > usuarios.id
+Ref: bitacora_auditoria.usuario_id > usuarios.id
+
