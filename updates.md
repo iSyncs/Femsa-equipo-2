@@ -50,3 +50,16 @@
 - Se definio el modelo simplificado actual como `v1.0.0`.
 - Se dejaron las 7 tablas como punto de partida oficial del proyecto.
 - Se eliminaran las versiones previas `v0.1.0` y `v0.1.1` para evitar confusion.
+
+## 2026-08-11 - Ajuste de identificadores
+
+### Logrado
+
+- Se cambiaron los identificadores de `uuid` a `integer`.
+- Las llaves primarias del DBML ahora usan `integer [pk, increment]`.
+- Las llaves foraneas quedaron como `integer`.
+- El SQL inicial se actualizo con columnas `integer generated always as identity`.
+
+### Decision
+
+- Se adopta `integer` por consistencia con los modelos iniciales del resto del equipo.

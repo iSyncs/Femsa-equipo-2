@@ -30,7 +30,7 @@ Enum plan_estado {
 }
 
 Table usuarios {
-  id uuid [pk]
+  id integer [pk, increment]
   nombre varchar(150) [not null]
   correo varchar(180) [not null, unique]
   rol varchar(80) [not null]
@@ -39,64 +39,64 @@ Table usuarios {
 }
 
 Table auditorias {
-  id uuid [pk]
+  id integer [pk, increment]
   codigo varchar(50) [not null, unique]
   nombre varchar(200) [not null]
   unidad_negocio varchar(150)
   proceso varchar(150)
-  responsable_id uuid [not null]
+  responsable_id integer [not null]
   estado auditoria_estado [not null, default: "pendiente"]
   fecha_inicio date
   fecha_fin date
 }
 
 Table controles {
-  id uuid [pk]
+  id integer [pk, increment]
   codigo varchar(50) [not null, unique]
   nombre varchar(200) [not null]
   descripcion text
   riesgo_asociado varchar(200)
-  responsable_id uuid
+  responsable_id integer
 }
 
 Table auditoria_controles {
-  id uuid [pk]
-  auditoria_id uuid [not null]
-  control_id uuid [not null]
-  auditor_id uuid
+  id integer [pk, increment]
+  auditoria_id integer [not null]
+  control_id integer [not null]
+  auditor_id integer
   resultado_diseno varchar(80)
   resultado_efectividad varchar(80)
   conclusion text
 }
 
 Table evidencias {
-  id uuid [pk]
-  auditoria_id uuid [not null]
-  control_id uuid
-  hallazgo_id uuid
+  id integer [pk, increment]
+  auditoria_id integer [not null]
+  control_id integer
+  hallazgo_id integer
   nombre_archivo varchar(255) [not null]
   url_archivo text
-  cargado_por_id uuid [not null]
+  cargado_por_id integer [not null]
   fecha_carga timestamp [not null]
 }
 
 Table hallazgos {
-  id uuid [pk]
-  auditoria_id uuid [not null]
-  control_id uuid
+  id integer [pk, increment]
+  auditoria_id integer [not null]
+  control_id integer
   titulo varchar(200) [not null]
   descripcion text [not null]
   severidad varchar(50)
   estado hallazgo_estado [not null, default: "abierto"]
-  responsable_id uuid
+  responsable_id integer
   fecha_identificacion date
 }
 
 Table planes_accion {
-  id uuid [pk]
-  hallazgo_id uuid [not null]
+  id integer [pk, increment]
+  hallazgo_id integer [not null]
   descripcion text [not null]
-  responsable_id uuid [not null]
+  responsable_id integer [not null]
   estado plan_estado [not null, default: "pendiente"]
   fecha_compromiso date
   avance_porcentaje int [not null, default: 0]

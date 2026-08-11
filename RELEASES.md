@@ -13,6 +13,7 @@ Incluye:
 - Contexto sintetizado del PDF.
 - Modelo DBML inicial simplificado con 7 tablas.
 - SQL inicial equivalente para PostgreSQL.
+- Identificadores enteros autoincrementales para mantener consistencia con el equipo.
 - Registro de avances en `updates.md`.
 
 ## Proximas versiones propuestas

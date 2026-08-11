@@ -48,6 +48,12 @@ Por ahora se mantiene una version simplificada con 7 tablas:
 
 El objetivo es validar primero la estructura general. En futuros releases se podran separar tablas como roles, unidades de negocio, seguimientos, aprobaciones o bitacora si el alcance lo requiere.
 
+Convencion inicial:
+
+- Las llaves primarias usan `integer [pk, increment]`.
+- Las llaves foraneas usan `integer`.
+- Esta convencion se adopta para mantener consistencia con los modelos iniciales del resto del equipo.
+
 ## Versionado
 
 El proyecto se manejara por versiones/releases. Version inicial:
