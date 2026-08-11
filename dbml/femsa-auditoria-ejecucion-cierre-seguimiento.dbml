@@ -1,106 +1,78 @@
 // FEMSA Auditoria - Equipo 2
 // Alcance inicial: ejecucion, cierre y seguimiento
-// Version simple con 7 tablas para trabajar primero en dbdiagram.io
-
-Project femsa_auditoria_equipo_2 {
-  database_type: "PostgreSQL"
-  Note: "Modelo inicial simplificado. Se ampliara en futuros releases."
-}
-
-Enum auditoria_estado {
-  pendiente
-  en_ejecucion
-  en_cierre
-  cerrada
-}
-
-Enum hallazgo_estado {
-  abierto
-  en_plan_accion
-  en_seguimiento
-  cerrado
-}
-
-Enum plan_estado {
-  pendiente
-  en_progreso
-  vencido
-  completado
-  validado
-}
 
 Table usuarios {
-  id integer [pk, increment]
-  nombre varchar(150) [not null]
-  correo varchar(180) [not null, unique]
-  rol varchar(80) [not null]
-  area varchar(150)
-  activo boolean [not null, default: true]
+  id integer [primary key]
+  nombre varchar
+  correo varchar
+  rol varchar [note: 'E.g. auditor, jefe, gerente, auditado']
+  area varchar
+  activo boolean
 }
 
 Table auditorias {
-  id integer [pk, increment]
-  codigo varchar(50) [not null, unique]
-  nombre varchar(200) [not null]
-  unidad_negocio varchar(150)
-  proceso varchar(150)
-  responsable_id integer [not null]
-  estado auditoria_estado [not null, default: "pendiente"]
+  id integer [primary key]
+  codigo varchar
+  nombre varchar
+  unidad_negocio varchar [note: 'E.g. KOF, Proximidad, Spin']
+  proceso varchar
+  responsable_id integer
+  estado varchar [note: 'E.g. pendiente, en_ejecucion, en_cierre, cerrada']
   fecha_inicio date
   fecha_fin date
 }
 
 Table controles {
-  id integer [pk, increment]
-  codigo varchar(50) [not null, unique]
-  nombre varchar(200) [not null]
-  descripcion text
-  riesgo_asociado varchar(200)
+  id integer [primary key]
+  codigo varchar
+  nombre varchar
+  descripcion varchar
+  riesgo_asociado varchar
   responsable_id integer
 }
 
 Table auditoria_controles {
-  id integer [pk, increment]
-  auditoria_id integer [not null]
-  control_id integer [not null]
+  id integer [primary key]
+  auditoria_id integer
+  control_id integer
   auditor_id integer
-  resultado_diseno varchar(80)
-  resultado_efectividad varchar(80)
-  conclusion text
+  resultado_diseno varchar
+  resultado_efectividad varchar
+  conclusion varchar
 }
 
 Table evidencias {
-  id integer [pk, increment]
-  auditoria_id integer [not null]
+  id integer [primary key]
+  auditoria_id integer
   control_id integer
   hallazgo_id integer
-  nombre_archivo varchar(255) [not null]
-  url_archivo text
-  cargado_por_id integer [not null]
-  fecha_carga timestamp [not null]
+  nombre_archivo varchar
+  url_archivo varchar
+  cargado_por_id integer
+  fecha_carga timestamp
 }
 
 Table hallazgos {
-  id integer [pk, increment]
-  auditoria_id integer [not null]
+  id integer [primary key]
+  auditoria_id integer
   control_id integer
-  titulo varchar(200) [not null]
-  descripcion text [not null]
-  severidad varchar(50)
-  estado hallazgo_estado [not null, default: "abierto"]
+  titulo varchar
+  descripcion varchar
+  severidad varchar [note: 'E.g. baja, media, alta, critica']
+  estado varchar [note: 'E.g. abierto, en_plan_accion, en_seguimiento, cerrado']
   responsable_id integer
   fecha_identificacion date
 }
 
 Table planes_accion {
-  id integer [pk, increment]
-  hallazgo_id integer [not null]
-  descripcion text [not null]
-  responsable_id integer [not null]
-  estado plan_estado [not null, default: "pendiente"]
+  id integer [primary key]
+  hallazgo_id integer
+  descripcion varchar
+  responsable_id integer
+  estado varchar [note: 'E.g. pendiente, en_progreso, vencido, completado, validado']
   fecha_compromiso date
-  avance_porcentaje int [not null, default: 0]
-  comentario_seguimiento text
+  avance_porcentaje integer
+  comentario_seguimiento varchar
   fecha_ultimo_seguimiento date
 }
 
@@ -122,4 +94,3 @@ Ref: hallazgos.responsable_id > usuarios.id
 
 Ref: planes_accion.hallazgo_id > hallazgos.id
 Ref: planes_accion.responsable_id > usuarios.id
-

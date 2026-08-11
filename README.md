@@ -50,7 +50,7 @@ El objetivo es validar primero la estructura general. En futuros releases se pod
 
 Convencion inicial:
 
-- Las llaves primarias usan `integer [pk, increment]`.
+- Las llaves primarias usan `integer [primary key]`.
 - Las llaves foraneas usan `integer`.
 - Esta convencion se adopta para mantener consistencia con los modelos iniciales del resto del equipo.
 

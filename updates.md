@@ -56,10 +56,11 @@
 ### Logrado
 
 - Se cambiaron los identificadores de `uuid` a `integer`.
-- Las llaves primarias del DBML ahora usan `integer [pk, increment]`.
+- Las llaves primarias del DBML ahora usan `integer [primary key]`.
 - Las llaves foraneas quedaron como `integer`.
 - El SQL inicial se actualizo con columnas `integer generated always as identity`.
 
 ### Decision
 
 - Se adopta `integer` por consistencia con los modelos iniciales del resto del equipo.
+- El DBML se simplifica al estilo compartido por el equipo: `varchar` sin longitud, menos restricciones y notas de ejemplo.
